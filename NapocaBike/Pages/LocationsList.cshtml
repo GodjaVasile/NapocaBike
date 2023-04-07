@@ -1,0 +1,179 @@
+﻿@page
+@model NapocaBike.Pages.Locations.IndexModel
+
+@{
+    ViewData["Title"] = "Locations list ";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Napoca</title>
+    <link rel="stylesheet" href="~/css/stylewelcome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <section>
+        <input type="checkbox" id="check">
+        <header>
+            <h2><a href="#" class="logo"> Logo </a></h2>
+
+            <div class="navigation">
+                <a asp-area="" asp-page="/LocationsList" class="menu-item">Locations</a>
+                <a asp-area="" asp-page="/BikeParkingsList" class="menu-item">Parkings</a>
+                <a asp-area="" asp-page="/BikeParkings/Index" class="menu-item">AdminParkings</a>
+                <a asp-area="" asp-page="/Locations/Index" class="menu-item">AdminLocations</a>
+                <a asp-area="" asp-page="/BikeRentals/Create" class="menu-item">Rentals</a>
+
+                <a href="#" class="menu-item">AboutUs</a>
+                <partial name="_LoginPartial" />
+            </div>
+            <label for="check">
+                <i class="fas fa-bars menu-btn"></i>
+                <i class="fas fa-times close-btn"></i>
+            </label>
+
+
+        </header>
+        <div id="map" style="height:400px;"></div>
+</body>
+</html>
+
+
+<div id="map" style="height:400px;"></div>
+
+
+
+@section Scripts {
+    <script>
+
+
+      
+
+
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 46.770439, lng: 23.591423 },
+                zoom: 12,
+                mapId: '6ff3460938009822'
+            });
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+
+
+            function createContent(name, program, category) {
+                var content = '<div class="marker-title">' + name + '<br />Program: ' + program + '<br />Tip locatie: ' + category + '</div>';
+                return content;
+            }
+
+            // New function to create content for bike rentals
+            function createContentRental(name, bikesAvailable, emptySpaces) {
+                var content = '<div class="marker-title">' + name + '<br />Bikes Available: ' + bikesAvailable + '<br />Empty Spaces: ' + emptySpaces + '</div>';
+                return content;
+            }
+
+            function OpenMarkerDetails(content, map, marker) {
+                var infowindow = new google.maps.InfoWindow({
+                    content: content
+                });
+                infowindow.open(map, marker);
+            }
+
+
+        @foreach (var item in Model.LocationD.Locations)
+        {
+            <text>
+                    (function () {
+                        var content = createContent('@item.Name', '@item.Program', '@item.LocationCategories');
+
+                        var marker = new google.maps.Marker({
+                            position: { lat: @item.Latitude, lng: @item.Longitude },
+                            map: map,
+                            icon: {
+                                url: "/Icons/locationpin.png",
+                                scaledSize: new google.maps.Size(32, 32)
+                            }
+                        });
+
+                        marker.addListener('click', function () { OpenMarkerDetails(content, map, marker); });
+                    })();
+            </text>
+        }
+        @foreach (var rental in Model.LocationD.BikeRentals)
+        {
+            <text>
+                    (function () {
+                        var content = createContentRental('@rental.Name', '@rental.BikesAvailable', '@rental.EmptySpaces');
+
+                        var marker = new google.maps.Marker({
+                            position: { lat: @rental.Latitude, lng: @rental.Longitude },
+                            map: map,
+                            icon: {
+                                url: "/Icons/rentalpin.png",
+                                scaledSize: new google.maps.Size(32, 32)
+                            }
+                        });
+
+                        marker.addListener('click', function () { OpenMarkerDetails(content, map, marker); });
+                    })();
+            </text>
+        }
+        }
+        var watchId;
+        var currentLocationMarker;
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            if (currentLocationMarker) {
+                currentLocationMarker.setMap(null);
+            }
+
+            currentLocationMarker = new google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: map,
+                icon: {
+                    url: "/Icons/person2.png",
+                    scaledSize: new google.maps.Size(36, 36)
+                },
+                title: "Your Current Location"
+            });
+
+            map.setCenter({ lat: lat, lng: lng });
+            map.setZoom(15);
+        }
+
+        function startTracking() {
+            var options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            watchId = navigator.geolocation.watchPosition(showPosition, handleError, options);
+        }
+
+        function stopTracking() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+        }
+
+        function handleError(error) {
+            console.warn('ERROR(' + error.code + '): ' + error.message);
+        }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzHZqkegdjz_xvNtEuYReEdgrPi1PFmbk&callback=initMap&v=weekly" async defer></script>
+}

@@ -3,13 +3,14 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
 <h1>Create</h1>
 
 <h4>BikeRental</h4>
 <hr />
+<div id="createMap" style="height: 400px;"></div>
+
 <div class="row">
     <div class="col-md-4">
         <form method="post">
@@ -55,6 +56,56 @@
     <a asp-page="Index">Back to List</a>
 </div>
 
+
+
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        var map;
+        var geocoder;
+        var marker;
+        var addressInput;
+
+        function initMap() {
+            geocoder = new google.maps.Geocoder();
+            map = new google.maps.Map(document.getElementById("createMap"), {
+                center: { lat: 46.770439, lng: 23.591423 },
+                zoom: 10,
+            });
+            marker = new google.maps.Marker({
+                position: { lat: 46.770439, lng: 23.591423 },
+                map: map,
+                draggable: true,
+            });
+            marker.addListener("dragend", function () {
+                var lat = marker.getPosition().lat();
+                var lng = marker.getPosition().lng();
+                document.getElementById("@Html.IdFor(model => model.BikeRental.Latitude)").value = lat;
+                document.getElementById("@Html.IdFor(model => model.BikeRental.Longitude)").value = lng;
+            });
+
+            addressInput = document.getElementById("@Html.IdFor(model => model.BikeRental.Adress)");
+            addressInput.addEventListener("change", geocodeAddress);
+        }
+
+        function geocodeAddress() {
+            geocoder.geocode({ "address": addressInput.value }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    marker.setPosition(results[0].geometry.location);
+                    document.getElementById("@Html.IdFor(model => model.BikeRental.Latitude)").value = results[0].geometry.location.lat();
+                    document.getElementById("@Html.IdFor(model => model.BikeRental.Longitude)").value = results[0].geometry.location.lng();
+                } else {
+                    alert("Geocode nu a reușit pentru următorul motiv: " + status);
+                }
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzHZqkegdjz_xvNtEuYReEdgrPi1PFmbk&callback=initMap&v=weekly&libraries=places" async defer></script>
 }
+
+

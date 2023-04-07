@@ -1,10 +1,58 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Welcome Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Napoca</title>
+    <link rel="stylesheet" href="~/css/stylewelcome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+</head>
+
+<body>
+  
+    <section>
+        <input type="checkbox" id="check">
+        <header>
+            <h2><a href="#" class="logo"> Logo </a></h2>
+
+            <div class="navigation">
+                <a asp-area="" asp-page="/LocationsList" class="menu-item">Locations</a>
+                <a asp-area="" asp-page="/BikeParkingsList" class="menu-item">Parkings</a>
+                <a asp-area="" asp-page="/BikeParkings/Index" class="menu-item">AdminParkings</a>
+                <a asp-area="" asp-page="/Locations/Index" class="menu-item">AdminLocations</a>
+                <a asp-area="" asp-page="/BikeRentals/Create" class="menu-item">Rentals</a>
+
+                <a href="#" class="menu-item">AboutUs</a>
+                <partial name="_LoginPartial" />
+            </div>
+            <label for="check">
+                <i class="fas fa-bars menu-btn"></i>
+                <i class="fas fa-times close-btn"></i>
+            </label>
+
+
+        </header>
+        <div class="content">
+            <div class="info">
+                <h2>Incepe sa pedalezi<br><span>Fii liber!</span></h2>
+                <a asp-area="" asp-page="/LocationsList" class="info-btn">Vezi locatiile</a>
+            </div>
+        </div>
+        <div class="media-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </section>
+</body>
+</html>
+
+

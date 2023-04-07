@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapocaBike.Data;
 using NapocaBike.Models;
+using NapocaBike.Models;
 
 namespace NapocaBike.Pages.BikeParkings
 {
@@ -25,13 +26,13 @@ namespace NapocaBike.Pages.BikeParkings
         }
 
         [BindProperty]
-        public BikeParking BikeParking { get; set; } = default!;
-        
+        public BikeParking BikeParking { get; set; }
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.BikeParking == null || BikeParking == null)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }

@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NapocaBike.Data;
 using NapocaBike.Models;
+using System.Security.Policy;
+using NapocaBike.Models;
 
 namespace NapocaBike.Pages.Locations
 {
-    public class EditModel : PageModel
+    public class EditModel : LocationCategoriesPageModel
     {
         private readonly NapocaBike.Data.NapocaBikeContext _context;
 
@@ -29,49 +31,65 @@ namespace NapocaBike.Pages.Locations
             {
                 return NotFound();
             }
+            Location = await _context.Location
 
-            var location =  await _context.Location.FirstOrDefaultAsync(m => m.ID == id);
-            if (location == null)
+                .Include(b => b.LocationCategories).ThenInclude(b => b.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (Location == null)
             {
                 return NotFound();
             }
-            Location = location;
+
+            PopulateAssignedCategoryData(_context, Location);
+
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedCategories)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
+            }
+            var locationToUpdate = await _context.Location
+                .Include(i => i.LocationCategories)
+                .ThenInclude(i => i.Category)
+                .FirstOrDefaultAsync(s => s.ID == id);
+            if (locationToUpdate == null)
+            {
+                return NotFound();
             }
 
-            _context.Attach(Location).State = EntityState.Modified;
+            // Preia noile coordonate din formular și le salvează în model
+            locationToUpdate.Latitude = Convert.ToDouble(Request.Form["Latitude"]);
+            locationToUpdate.Longitude = Convert.ToDouble(Request.Form["Longitude"]);
 
-            try
+            // Actualizează restul câmpurilor modelului
+            if (await TryUpdateModelAsync<Location>(
+                locationToUpdate,
+                "Location",
+                i => i.Name, i => i.Adress, i => i.Latitude, i => i.Longitude,
+                i => i.Program))
             {
+                UpdateLocationCategories(_context, selectedCategories, locationToUpdate);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(Location.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            // Actualizează categoriile și afișează pagina cu erorile
+            UpdateLocationCategories(_context, selectedCategories, locationToUpdate);
+            PopulateAssignedCategoryData(_context, locationToUpdate);
+            return Page();
         }
+
 
         private bool LocationExists(int id)
         {
-          return (_context.Location?.Any(e => e.ID == id)).GetValueOrDefault();
+            return _context.Location.Any(e => e.ID == id);
         }
     }
 }

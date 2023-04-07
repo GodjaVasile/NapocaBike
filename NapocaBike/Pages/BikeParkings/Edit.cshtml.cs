@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NapocaBike.Data;
 using NapocaBike.Models;
+using NapocaBike.Models;
 
 namespace NapocaBike.Pages.BikeParkings
 {
@@ -30,7 +31,7 @@ namespace NapocaBike.Pages.BikeParkings
                 return NotFound();
             }
 
-            var bikeparking =  await _context.BikeParking.FirstOrDefaultAsync(m => m.ID == id);
+            var bikeparking = await _context.BikeParking.FirstOrDefaultAsync(m => m.ID == id);
             if (bikeparking == null)
             {
                 return NotFound();
@@ -47,6 +48,10 @@ namespace NapocaBike.Pages.BikeParkings
             {
                 return Page();
             }
+
+            // Setează coordonatele noi din formular
+            BikeParking.Latitude = Convert.ToDouble(Request.Form["BikeParking.Latitude"]);
+            BikeParking.Longitude = Convert.ToDouble(Request.Form["BikeParking.Longitude"]);
 
             _context.Attach(BikeParking).State = EntityState.Modified;
 
@@ -69,9 +74,10 @@ namespace NapocaBike.Pages.BikeParkings
             return RedirectToPage("./Index");
         }
 
+
         private bool BikeParkingExists(int id)
         {
-          return (_context.BikeParking?.Any(e => e.ID == id)).GetValueOrDefault();
+            return _context.BikeParking.Any(e => e.ID == id);
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NapocaBike.Data;
 using NapocaBike.Models;
+using NapocaBike.Models;
 
 namespace NapocaBike.Pages.BikeRentals
 {
@@ -19,7 +20,7 @@ namespace NapocaBike.Pages.BikeRentals
             _context = context;
         }
 
-        public IList<BikeRental> BikeRental { get;set; } = default!;
+        public IList<BikeRental> BikeRental { get; set; } = default!;
 
         public async Task OnGetAsync()
         {

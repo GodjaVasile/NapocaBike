@@ -2,18 +2,26 @@
 @model NapocaBike.Pages.BikeParkings.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Available Parking Spaces";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
 
 
-<div id="map" style="height:400px;"></div>
-<form method="get">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available NapocaBike Parkings in Cluj-Napoca</title>
+    <link rel="stylesheet" href="~/css/BikeParkingsListStyle.css">
+    <script src="scripts.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Available NapocaBike Parkings in Cluj-Napoca</h1>
+        <p>Find the perfect bike parking location based on your security needs and location.</p>
+    </header>
+    <form method="get">
     <div class="form-group">
         <label>Capacity:</label>
         <input type="number" name="CapacityFilter" class="form-control" value="@Model.CapacityFilter" />
@@ -27,63 +35,28 @@
         <a asp-page="./Index" class="btn btn-secondary ml-2">Clear</a>
     </div>
 </form>
+    <section id="map" style="height: 400px;"></section>
+
+    <section>
+        <h2>Security Levels</h2>
+        <ul>
+            <li>Level 1: Basic security - simple bike racks, minimal surveillance</li>
+            <li>Level 2: Moderate security - secure bike racks, some surveillance</li>
+            <li>Level 3: High security - locked bike rooms, cameras, and/or on-site staff</li>
+            <li>Level 4: Very high security - card access control, individual bike lockers</li>
+            <li>Level 5: Maximum security - advanced access control, monitored 24/7, bike valet service</li>
+        </ul>
+    </section>
+
+    
+</body>
+</html>
 
 
 
 
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BikeParking[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BikeParking[0].Latitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BikeParking[0].Longitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BikeParking[0].Capacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BikeParking[0].SecurityLevel)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.BikeParking)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Latitude)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Longitude)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Capacity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SecurityLevel)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    @*                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                *@                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 @section Scripts {
-
     <script>
         var map;
         var currentLocationMarker;
@@ -94,6 +67,9 @@
                 zoom: 12
             });
 
+          
+
+                
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
             } else {
@@ -120,14 +96,18 @@
 
                         var marker = new google.maps.Marker({
                             position: { lat: @item.Latitude, lng: @item.Longitude },
-                            map: map
+                            map: map,
+                            icon: {
+                                    url: "/Icons/parking-sign.png",
+                                     scaledSize: new google.maps.Size(32, 32) // specify the size of the icon
+                                   },
                         });
 
                         marker.addListener('click', function () { OpenMarkerDetails(content, map, marker); });
                     })();
             </text>
         }
-                                }
+                            }
 
 
         function showPosition(position) {
