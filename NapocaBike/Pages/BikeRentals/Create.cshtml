@@ -1,0 +1,60 @@
+﻿@page
+@model NapocaBike.Pages.BikeRentals.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>BikeRental</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="BikeRental.Name" class="control-label"></label>
+                <input asp-for="BikeRental.Name" class="form-control" />
+                <span asp-validation-for="BikeRental.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BikeRental.Adress" class="control-label"></label>
+                <input asp-for="BikeRental.Adress" class="form-control" />
+                <span asp-validation-for="BikeRental.Adress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BikeRental.BikesAvailable" class="control-label"></label>
+                <input asp-for="BikeRental.BikesAvailable" class="form-control" />
+                <span asp-validation-for="BikeRental.BikesAvailable" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BikeRental.EmptySpaces" class="control-label"></label>
+                <input asp-for="BikeRental.EmptySpaces" class="form-control" />
+                <span asp-validation-for="BikeRental.EmptySpaces" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BikeRental.Latitude" class="control-label"></label>
+                <input asp-for="BikeRental.Latitude" class="form-control" />
+                <span asp-validation-for="BikeRental.Latitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BikeRental.Longitude" class="control-label"></label>
+                <input asp-for="BikeRental.Longitude" class="form-control" />
+                <span asp-validation-for="BikeRental.Longitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
