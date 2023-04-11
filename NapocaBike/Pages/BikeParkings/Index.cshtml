@@ -76,8 +76,7 @@
                 </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    @*                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                *@                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
                 </td>
             </tr>
         }
@@ -109,36 +108,39 @@
                 alert("Geolocation is not supported by this browser.");
             }
 
-            function createContent(name, capacity, securityLevel) {
-                var content = '<div class="marker-title">' + name + '<br />Capacitate: ' + capacity + '<br />Securitylevel: ' + securityLevel + '</div>';
-                return content;
-            }
-
-            function OpenMarkerDetails(content, map, marker) {
-                var infowindow = new google.maps.InfoWindow({
-                    content: content
-                });
-                infowindow.open(map, marker);
-            }
-
-            @foreach (var item in Model.BikeParking)
-            {
+        @foreach (var item in Model.BikeParking)
+        {
             <text>
                     (function () {
-                        var content = createContent('@item.Name', '@item.Capacity', '@item.SecurityLevel');
-                        var marker = new google.maps.Marker({
-                            position: { lat: @item.Latitude, lng: @item.Longitude },
-                            map: map
+                        const position = { lat: @item.Latitude, lng: @item.Longitude };
+
+                        const marker = new google.maps.Marker({
+                            position,
+                            map,
+                            title: '@item.Name',
                         });
-                        marker.addListener('click', function () {
-                            OpenMarkerDetails(content, map, marker);
+
+                        const infowindow = new google.maps.InfoWindow({
+                            content: `
+                                    <div>
+                                        <h3>@item.Name</h3>
+                                        <p>Capacity: @item.Capacity</p>
+                                        <p>Security Level: @item.SecurityLevel</p>
+                                    </div>
+                                `,
+                        });
+
+                        marker.addListener("click", () => {
+                            infowindow.open(map, marker);
                             calculateAndDisplayRoute(directionsService, directionsRenderer, currentLocationMarker.getPosition(), marker.getPosition());
                         });
+
                         markers.push(marker);
                     })();
             </text>
-            }
         }
+        }
+
 
         function showPosition(position) {
             var lat = position.coords.latitude;

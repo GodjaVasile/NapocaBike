@@ -67,6 +67,13 @@ header .navigation a:not(:last-child){
 header .navigation a:hover{
     background: #D9AF32;
 }
+header .login-container {
+        position: absolute;
+        top: 30px;
+        right: 100px;
+}
+
+
 .content {
     
     max-width: 650px;
@@ -147,8 +154,13 @@ header .navigation a:hover{
     }
 
     @media (max-width: 960px){ 
-        header .navigation{ display: none; } 
-    
+        header .navigation{ display: none; }
+
+        header .login-container {
+            top: 15px;
+            right: 15px;
+        }
+
         label{ 
             display: block; 
             font-size: 25px; 

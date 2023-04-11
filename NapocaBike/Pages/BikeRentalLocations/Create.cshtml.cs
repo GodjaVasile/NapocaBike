@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NapocaBike.Data;
-using NapocaBike.Models;
-using NapocaBike.Models;
 
-namespace NapocaBike.Pages.BikeRentals
+namespace NapocaBike.Pages.BikeRentalLocations
 {
     public class CreateModel : PageModel
     {
@@ -26,18 +24,18 @@ namespace NapocaBike.Pages.BikeRentals
         }
 
         [BindProperty]
-        public BikeRental BikeRental { get; set; } = default!;
-
+        public BikeRentalLocation BikeRentalLocation { get; set; } = default!;
+        
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || _context.BikeRental == null || BikeRental == null)
+          if (!ModelState.IsValid || _context.BikeRentalLocation == null || BikeRentalLocation == null)
             {
                 return Page();
             }
 
-            _context.BikeRental.Add(BikeRental);
+            _context.BikeRentalLocation.Add(BikeRentalLocation);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

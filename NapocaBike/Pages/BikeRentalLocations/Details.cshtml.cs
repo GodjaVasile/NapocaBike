@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NapocaBike.Data;
-using NapocaBike.Models;
 
-namespace NapocaBike.Pages.BikeRentals
+namespace NapocaBike.Pages.BikeRentalLocations
 {
     public class DetailsModel : PageModel
     {
@@ -19,23 +18,23 @@ namespace NapocaBike.Pages.BikeRentals
             _context = context;
         }
 
-      public BikeRental BikeRental { get; set; } = default!; 
+      public BikeRentalLocation BikeRentalLocation { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.BikeRental == null)
+            if (id == null || _context.BikeRentalLocation == null)
             {
                 return NotFound();
             }
 
-            var bikerental = await _context.BikeRental.FirstOrDefaultAsync(m => m.ID == id);
-            if (bikerental == null)
+            var bikerentallocation = await _context.BikeRentalLocation.FirstOrDefaultAsync(m => m.Id == id);
+            if (bikerentallocation == null)
             {
                 return NotFound();
             }
             else 
             {
-                BikeRental = bikerental;
+                BikeRentalLocation = bikerentallocation;
             }
             return Page();
         }

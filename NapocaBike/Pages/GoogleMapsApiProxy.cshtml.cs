@@ -22,7 +22,7 @@ namespace NapocaBike.Pages
 
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.GetAsync($"{googleMapsApiBaseUrl}?key={apiKey}&libraries=geometry&callback=initMap&v=weekly");
+                HttpResponseMessage response = await client.GetAsync($"{googleMapsApiBaseUrl}?key={apiKey}&libraries=geometry&libraries=geocoding&callback=initMap&v=weekly");
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();

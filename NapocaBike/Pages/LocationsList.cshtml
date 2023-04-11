@@ -51,100 +51,64 @@
 
 @section Scripts {
     <script>
-
-
-      
-
-
         var map;
+        var currentLocationMarker;
+        let markers = [];
+
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: 46.770439, lng: 23.591423 },
-                zoom: 12,
-                mapId: '6ff3460938009822'
+                zoom: 12
             });
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
             } else {
                 alert("Geolocation is not supported by this browser.");
             }
 
-
-            function createContent(name, program, category) {
-                var content = '<div class="marker-title">' + name + '<br />Program: ' + program + '<br />Tip locatie: ' + category + '</div>';
-                return content;
-            }
-
-            // New function to create content for bike rentals
-            function createContentRental(name, bikesAvailable, emptySpaces) {
-                var content = '<div class="marker-title">' + name + '<br />Bikes Available: ' + bikesAvailable + '<br />Empty Spaces: ' + emptySpaces + '</div>';
-                return content;
-            }
-
-            function OpenMarkerDetails(content, map, marker) {
-                var infowindow = new google.maps.InfoWindow({
-                    content: content
-                });
-                infowindow.open(map, marker);
-            }
-
-
         @foreach (var item in Model.LocationD.Locations)
         {
             <text>
                     (function () {
-                        var content = createContent('@item.Name', '@item.Program', '@item.LocationCategories');
+                        const position = { lat: @item.Latitude, lng: @item.Longitude };
 
-                        var marker = new google.maps.Marker({
-                            position: { lat: @item.Latitude, lng: @item.Longitude },
-                            map: map,
-                            icon: {
-                                url: "/Icons/locationpin.png",
-                                scaledSize: new google.maps.Size(32, 32)
-                            }
+                        const marker = new google.maps.Marker({
+                            position,
+                            map,
+                            title: '@item.Name',
                         });
 
-                        marker.addListener('click', function () { OpenMarkerDetails(content, map, marker); });
+                        const infowindow = new google.maps.InfoWindow({
+                            content: `
+                                                            <div>
+                                                                <h3>@item.Name</h3>
+                                                                <p>Address: @item.Adress</p>
+                                                                <p>Program: @item.Program</p>
+                                                            </div>
+                                                        `,
+                        });
+
+                        marker.addListener("click", () => {
+                            infowindow.open(map, marker);
+                        });
+
+                        markers.push(marker);
                     })();
             </text>
         }
-        @foreach (var rental in Model.LocationD.BikeRentals)
-        {
-            <text>
-                    (function () {
-                        var content = createContentRental('@rental.Name', '@rental.BikesAvailable', '@rental.EmptySpaces');
-
-                        var marker = new google.maps.Marker({
-                            position: { lat: @rental.Latitude, lng: @rental.Longitude },
-                            map: map,
-                            icon: {
-                                url: "/Icons/rentalpin.png",
-                                scaledSize: new google.maps.Size(32, 32)
-                            }
-                        });
-
-                        marker.addListener('click', function () { OpenMarkerDetails(content, map, marker); });
-                    })();
-            </text>
-        }
-        }
-        var watchId;
-        var currentLocationMarker;
+                        }
 
         function showPosition(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
 
-            if (currentLocationMarker) {
-                currentLocationMarker.setMap(null);
-            }
-
             currentLocationMarker = new google.maps.Marker({
                 position: { lat: lat, lng: lng },
                 map: map,
                 icon: {
-                    url: "/Icons/person2.png",
-                    scaledSize: new google.maps.Size(36, 36)
+                    url: "/Icons/person.png",
+                    scaledSize: new google.maps.Size(32, 32) // specify the size of the icon
                 },
                 title: "Your Current Location"
             });
@@ -152,29 +116,8 @@
             map.setCenter({ lat: lat, lng: lng });
             map.setZoom(15);
         }
-
-        function startTracking() {
-            var options = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            };
-
-            watchId = navigator.geolocation.watchPosition(showPosition, handleError, options);
-        }
-
-        function stopTracking() {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-            }
-        }
-
-        function handleError(error) {
-            console.warn('ERROR(' + error.code + '): ' + error.message);
-        }
-
     </script>
+    
     <script src="~/GoogleMapsApiProxy" async defer></script>
 
 }

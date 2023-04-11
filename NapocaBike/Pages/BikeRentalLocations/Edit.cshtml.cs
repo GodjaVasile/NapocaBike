@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NapocaBike.Data;
-using NapocaBike.Models;
 
-namespace NapocaBike.Pages.BikeRentals
+namespace NapocaBike.Pages.BikeRentalLocations
 {
     public class EditModel : PageModel
     {
@@ -21,21 +20,21 @@ namespace NapocaBike.Pages.BikeRentals
         }
 
         [BindProperty]
-        public BikeRental BikeRental { get; set; } = default!;
+        public BikeRentalLocation BikeRentalLocation { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.BikeRental == null)
+            if (id == null || _context.BikeRentalLocation == null)
             {
                 return NotFound();
             }
 
-            var bikerental =  await _context.BikeRental.FirstOrDefaultAsync(m => m.ID == id);
-            if (bikerental == null)
+            var bikerentallocation =  await _context.BikeRentalLocation.FirstOrDefaultAsync(m => m.Id == id);
+            if (bikerentallocation == null)
             {
                 return NotFound();
             }
-            BikeRental = bikerental;
+            BikeRentalLocation = bikerentallocation;
             return Page();
         }
 
@@ -48,7 +47,7 @@ namespace NapocaBike.Pages.BikeRentals
                 return Page();
             }
 
-            _context.Attach(BikeRental).State = EntityState.Modified;
+            _context.Attach(BikeRentalLocation).State = EntityState.Modified;
 
             try
             {
@@ -56,7 +55,7 @@ namespace NapocaBike.Pages.BikeRentals
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BikeRentalExists(BikeRental.ID))
+                if (!BikeRentalLocationExists(BikeRentalLocation.Id))
                 {
                     return NotFound();
                 }
@@ -69,9 +68,9 @@ namespace NapocaBike.Pages.BikeRentals
             return RedirectToPage("./Index");
         }
 
-        private bool BikeRentalExists(int id)
+        private bool BikeRentalLocationExists(int id)
         {
-          return (_context.BikeRental?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.BikeRentalLocation?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

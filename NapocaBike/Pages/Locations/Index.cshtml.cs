@@ -43,10 +43,7 @@ namespace NapocaBike.Pages.Locations
                     .ToListAsync();
 
 
-            LocationD.BikeRentals = await _context.BikeRental
-        .AsNoTracking()
-           .OrderBy(q => q.Name)
-            .ToListAsync();
+            
 
             if (id != null)
             {
